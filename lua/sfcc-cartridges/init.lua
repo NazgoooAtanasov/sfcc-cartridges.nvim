@@ -65,7 +65,9 @@ local get_cartridge_files = function ()
     return file_paths
 end
 
-local source = {}
+local source = {
+    require_suggestions = nil
+}
 
 function source:is_available()
     return true
@@ -73,7 +75,12 @@ end
 
 function source:complete(_, callback)
     if check_dw_dir() then
-        callback(get_cartridge_files())
+        if source.require_suggestions == nil then
+            -- at some point that caching thing has to be revalidated
+            source.require_suggestions = get_cartridge_files()
+        end
+
+        callback(source.require_suggestions)
     else 
         callback({})
     end
