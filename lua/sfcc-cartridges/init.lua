@@ -5,7 +5,17 @@ function os.capture(cmd)
     return s
 end
 
-local out = os.capture("find . \\( -name \"build-suite\" -o -name \"node_modules\" -o -name \"test\" -o -name \"static\" -o -name \"client\" \\) -prune -o -name \"*.js\"")
+local check_dw_dir = function ()
+    local dw_json = io.open("./dw.json", "r")
+
+    if dw_json ~= nil then
+        io.close(dw_json)
+        return true
+    end
+
+    return false
+end
+
 local split = function(inputstr, sep)
     if sep == nil then
         sep = "%s"
@@ -40,6 +50,7 @@ local join_table_for_path = function (table, join)
 end
 
 local get_cartridge_files = function ()
+    local out = os.capture("find . \\( -name \"build-suite\" -o -name \"node_modules\" -o -name \"test\" -o -name \"static\" -o -name \"client\" \\) -prune -o -name \"*.js\"")
     local full_file_paths = split(out, "\n")
 
     local file_paths = {}
@@ -61,7 +72,11 @@ function source:is_available()
 end
 
 function source:complete(_, callback)
-    callback(get_cartridge_files())
+    if check_dw_dir() then
+        callback(get_cartridge_files())
+    else 
+        callback({})
+    end
 end
 
 function source:execute(completion_item, callback)
