@@ -12,7 +12,9 @@ Yes:
 ## How to?
 Just install it with your plugin manager and put that lua code somewhere in your config
 ```lua
-require('sfcc-cartridges')
+require('sfcc-cartridges').setup({
+    sourceName: 'sfcc' -- this `sourceName` needs to be the same as what you put in the `sources` map
+})
 ```
 
 And the following line in the [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) list of sources.

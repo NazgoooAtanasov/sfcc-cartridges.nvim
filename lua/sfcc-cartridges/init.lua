@@ -1,3 +1,5 @@
+local M = {}
+
 function os.capture(cmd)
     local f = assert(io.popen(cmd, 'r'))
     local s = assert(f:read('*a'))
@@ -81,7 +83,7 @@ function source:complete(_, callback)
         end
 
         callback(source.require_suggestions)
-    else 
+    else
         callback({})
     end
 end
@@ -90,4 +92,11 @@ function source:execute(completion_item, callback)
     callback(completion_item)
 end
 
-require('cmp').register_source('sfcc', source)
+function M.setup(opts)
+    require('cmp').register_source(
+        opts.sourceName ~= nil and opts.sourceName or 'sfcc',
+        source
+    )
+end
+
+return M
