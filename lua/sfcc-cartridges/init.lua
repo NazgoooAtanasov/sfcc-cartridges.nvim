@@ -57,11 +57,15 @@ local get_cartridge_files = function ()
 
     local file_paths = {}
     for _, value in ipairs(full_file_paths) do
+        value = string.gsub(value, ".js", "") -- removing the file extension from the string
         local file_path_split = split(value, "/")
         local cartridge_str_idx = index_of(file_path_split, "cartridge")
 
         local path = join_table_for_path({ unpack(file_path_split, cartridge_str_idx, #file_path_split) }, "/")
-        table.insert(file_paths, { label = path })
+        table.insert(file_paths, {
+            label = path,
+            insertText = "const "..file_path_split[#file_path_split].." = require('"..path.."');"
+        })
     end
 
     return file_paths
